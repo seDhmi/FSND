@@ -36,10 +36,8 @@ Shows Section
 
 class Show(db.Model):
     __tablename__ = 'shows'
-    actor_id = db.Column(db.Integer(), db.ForeignKey(
-        'actors.id'), primary_key=True)
-    movie_id = db.Column(db.Integer(), db.ForeignKey(
-        'movies.id'), primary_key=True)
+    actor_id = db.Column(db.Integer(), db.ForeignKey('actors.id'), primary_key=True)
+    movie_id = db.Column(db.Integer(), db.ForeignKey('movies.id'), primary_key=True)
 
     def __init__(self, actor_id, movie_id):
         self.actor_id = actor_id

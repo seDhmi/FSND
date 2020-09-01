@@ -32,43 +32,6 @@ def create_app(test_config=None):
             'message': 'hello world'
         })
 
-    @app.route('/movies', methods=['DELETE'])
-    @requires_auth('delete:movies')
-    def delete_all_movies(payload):
-
-        try:
-            db_drop_and_create_all()
-            return jsonify({
-                "success": True,
-                "deleted": "All Movies"
-            })
-        except Exception:
-            abort(422)
-
-    @app.route('/actors')
-    @requires_auth('get:actors')
-    def get_actors(payload):
-        data = Actor.query.all()
-        actors = list(map(Actor.get_actor, data))
-        if actors is None or len(actors) == 0:
-            abort(404)
-        return jsonify({
-            'success': True,
-            'actors': actors
-        })
-
-    @app.route('/movies')
-    @requires_auth(permission='get:movies')
-    def get_movies(payload):
-        data = Movie.query.all()
-        movies = list(map(Movie.get_movie, data))
-        if movies is None or len(movies) == 0:
-            abort(404)
-        return jsonify({
-            'success': True,
-            'movies': movies
-        })
-
     @app.route('/shows')
     def get_all_shows():
         data = Show.query.all()
@@ -94,6 +57,39 @@ def create_app(test_config=None):
             return jsonify({
                 'success': True,
                 'new show': [new_show.get_show()]
+            })
+
+        except Exception:
+            abort(422)
+
+    @app.route('/actors')
+    @requires_auth('get:actors')
+    def get_actors(payload):
+        data = Actor.query.all()
+        actors = list(map(Actor.get_actor, data))
+        if actors is None or len(actors) == 0:
+            abort(404)
+        return jsonify({
+            'success': True,
+            'actors': actors
+        })
+      
+    @app.route('/actors', methods=['POST'])
+    @requires_auth('post:actors')
+    def post_actor(payload):
+        body = request.get_json()
+        if body is None:
+            abort(404)
+        name = body.get('name', None)
+        age = body.get('age', None)
+        gender = body.get('gender', None)
+
+        try:
+            new_actor = Actor(name=name, age=age, gender=gender)
+            new_actor.insert()
+            return jsonify({
+                'success': True,
+                'actors': [new_actor.get_actor()]
             })
 
         except Exception:
