@@ -9,12 +9,12 @@ from auth.auth import AuthError, requires_auth
 
 
 def create_app(test_config=None):
-    # create and configure the app
+
     app = Flask(__name__)
     setup_db(app)
     CORS(app)
 
-    # DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
+
     db_drop_and_create_all()
 
     @app.after_request
@@ -218,7 +218,6 @@ def create_app(test_config=None):
         }), error.status_code
 
     return app
-
 
 app = create_app()
 
