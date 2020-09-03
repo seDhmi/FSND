@@ -97,7 +97,7 @@ def requires_auth(permission=''):
 
 
 def verify_decode_jwt(token):
-    jsonurl = urlopen(f'https://capstone-sedhmi.us.auth0.com/.well-known/jwks.json')
+    jsonurl = urlopen(f'{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
     unverified_header = jwt.get_unverified_header(token)
     rsa_key = {}
@@ -121,9 +121,9 @@ def verify_decode_jwt(token):
             payload = jwt.decode(
                 token,
                 rsa_key,
-                algorithms=['RS256'],
-                audience='https://capstone-sedhmi',
-                issuer='https://capstone-sedhmi.us.auth0.com/'
+                algorithms=ALGORITHMS,
+                audience=API_AUDIENCE,
+                issuer=AUTH0_DOMAIN
             )
 
             return payload
