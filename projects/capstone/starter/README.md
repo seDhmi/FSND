@@ -8,7 +8,7 @@ You are an Executive Producer within the company and are creating a system to si
 
 ## Installing Dependencies 
 
-# Python 3.7
+### Python 3.7
 
 Follow instructions to install the latest version of python for your platform in the python docs: https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python
 
@@ -24,7 +24,7 @@ pip install -r requirements.txt
 ```
 
 ## Running the server
-# To running app locally:
+### To running app locally:
 
 In right directory , using virtual environment to run the server :
 ```
