@@ -19,10 +19,8 @@ def create_app(test_config=None):
 
     @app.after_request
     def after_request(response):
-        response.headers.add('Access-Control-Allow-Headers',
-                             'Content-Type, Authorization, true')
-        response.headers.add('Access-Control-Allow-Methods',
-                             'GET, PATCH, POST, DELETE, OPTIONS')
+        response.headers.add('Access-Control-Allow-Headers','Content-Type, Authorization, true')
+        response.headers.add('Access-Control-Allow-Methods','GET, PATCH, POST, DELETE, OPTIONS')
         return response
 
     @app.route('/')
@@ -73,6 +71,7 @@ def create_app(test_config=None):
     def get_actors(payload):
         data = Actor.query.all()
         actors = list(map(Actor.get_actor, data))
+        
         if actors is None or len(actors) == 0:
             abort(404)
         return jsonify({
