@@ -11,11 +11,7 @@ database_path = "sqlite:///{}".format(os.path.join(project_dir, database_filenam
 
 db = SQLAlchemy()
 
-"""
-setup_db(app): ties a flask application and a SQLAlchemy service
-"""
-
-
+""" setup_db(app): ties a flask application and a SQLAlchemy service. """
 def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -29,11 +25,7 @@ def db_drop_and_create_all():
     db.create_all()
 
 
-"""
-Shows Section
-"""
-
-
+""" Shows Section. """
 class Show(db.Model):
     __tablename__ = 'shows'
     actor_id = db.Column(db.Integer(), db.ForeignKey('actors.id'), primary_key=True)
@@ -67,11 +59,9 @@ class Show(db.Model):
         return json.dumps(self.format())
 
 
-"""
-Movies Section
-"""
+    """ Movies Section """
 
-
+""" Shows Section. """
 class Movie(db.Model):
     __tablename__ = "movies"
 
@@ -111,12 +101,7 @@ class Movie(db.Model):
     def __repr__(self):
         return json.dumps(self.format())
 
-
-"""
-Actors Section
-"""
-
-
+""" Actors Section. """
 class Actor(db.Model):
     __tablename__ = "actors"
 

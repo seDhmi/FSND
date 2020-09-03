@@ -32,6 +32,9 @@ def create_app(test_config=None):
             'message': 'hello world'
         })
 
+    
+        # Shows
+
     @app.route('/shows')
     def get_all_shows():
         data = Show.query.all()
@@ -61,6 +64,9 @@ def create_app(test_config=None):
 
         except Exception:
             abort(422)
+
+
+        # Actors
 
     @app.route('/actors')
     @requires_auth('get:actors')
@@ -111,6 +117,8 @@ def create_app(test_config=None):
             'success': True,
             'movies': movies
         })
+
+        # Actors
 
     @app.route('/movies', methods=['POST'])
     @requires_auth('post:movies')
