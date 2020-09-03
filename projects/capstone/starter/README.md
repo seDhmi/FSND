@@ -6,24 +6,30 @@ The Casting Agency models a company that is responsible for creating movies and 
 
 You are an Executive Producer within the company and are creating a system to simplify and streamline your process.
 
-## Initial configuration
+## Installing Dependencies 
 
-Create a migration repository:
+# Python 3.7
 
+Follow instructions to install the latest version of python for your platform in the python docs: https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python
+
+Virtual Enviornment
+
+We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organaized. Instructions for setting up a virual enviornment for your platform can be found in the python docs
+
+PIP Dependencies
+
+Once you have your virtual environment setup and running, install dependencies by naviging to directory and running:
 ```
-flask db init
+pip install -r requirements.txt
 ```
 
-Then generate an initial migration:
+## Running the server
+# To running app locally:
 
-```shell
-flask db migrate -m "Initial migration."
+In right directory , using virtual environment to run the server :
 ```
-
-Finally, apply the migration to the database:
-
-```shell
-flask db upgrade
+export FLASK_APP=app.py
+flask run --reload
 ```
 
 ## Models
