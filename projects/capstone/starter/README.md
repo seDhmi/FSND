@@ -8,7 +8,7 @@ You are an Executive Producer within the company and are creating a system to si
 
 ## Installing Dependencies 
 
-### Python 3.7
+### Python 3.8
 
 Follow instructions to install the latest version of python for your platform in the python docs: https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python
 
@@ -20,7 +20,7 @@ PIP Dependencies
 
 Once you have your virtual environment setup and running, install dependencies by naviging to directory and running:
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ## Running the server
