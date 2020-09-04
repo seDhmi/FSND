@@ -69,9 +69,7 @@ class CastingTestCase(unittest.TestCase):
 
     # One test for success behavior of each endpoint
     def test_get_actors_casting_assistant(self):
-        res = self.client().get('/actors',
-                                headers=setup_auth("casting_assistant"))
-
+        res = self.client().get('/actors', headers=setup_auth("casting_assistant"))
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
@@ -92,6 +90,16 @@ class CastingTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(len(data['actors']))
 
+    def test_update_actor_casting_director(self):
+        actor = Actor(name='Maha', age=50, gendar='Female')
+        actor.insert()
+        actorId = actor.id
+        res = self.client().patch(f'/actors/{actor.id}', json={
+            'name': 'EDIT name', 'age': 10, 'gendar': 'female'}, headers=self.casting_director)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+
     # One test for error behavior of each endpoint
     def test_401_post_actor_casting_assistant(self):
         res = self.client().post('/actors', json=self.new_actor, headers=setup_auth('casting_assistant'))
@@ -101,14 +109,22 @@ class CastingTestCase(unittest.TestCase):
         res = self.client().post('/movies', json=self.new_movie,headers=setup_auth('casting_director'))
         self.assertEqual(res.status_code, 401)
     
-    def test_404_patch_actor_fail(self):
-        res = self.client().patch('/actors/100', json={},
-                                  headers=setup_auth('executive_producer'))
+    def test_404_patch_actor_fail_executive_producer(self):
+        res = self.client().patch('/actors/100', json={}, headers=setup_auth('executive_producer'))
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
 
-# Run the test suite, by running python test_file_name.py from the command line.
+    def test_403_delete_actor_casting_assistant(self):
+        actor = Actor(name='Maha', age=10, gendar='Female')
+        actor.insert()
+        actorId = actor.id
+        res = self.client().delete(f'/actors/{actor.id}', headers=self.casting_assistant)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 403)
+        self.assertEqual(data['success'], False)
+
+# Run the test suite,
 if __name__ == "__main__":
     unittest.main()

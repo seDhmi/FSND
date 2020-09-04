@@ -15,17 +15,16 @@ class AuthError(Exception):
         self.error = error
         self.status_code = status_code
 
-
-def get_token_auth_header():
+def get_token_auth0header():
     "Method to handle access token from Auth Header."
-    auth = request.headers.get('Authorization', None)
-    if not auth:
+    auth0Header = request.headers.get('Authorization', None)
+    if not auth0Header:
         raise AuthError({
             'code':'Authorization_header_missing',
             'description':'Authorization header is expected.'
         }, 401)
 
-    parts = auth.split()
+    parts = auth0Header.split()
 
     if parts[0].lower() != 'bearer':
         raise AuthError({
@@ -46,7 +45,6 @@ def get_token_auth_header():
     token = parts[1]
     return token
 
-
 def check_permissions(permission, payload):
     if 'permissions' not in payload:
         raise AuthError({
@@ -59,48 +57,16 @@ def check_permissions(permission, payload):
             'code': 'unauthorized',
             'description': 'Permission not found.'
         }, 401)
+        
     return True
-
-
-def requires_auth(permission=''):
-    def requires_auth_decorator(f):
-        @wraps(f)
-        def wrapper(*args, **kwargs):
-            token = get_token_auth_header()
-            try:
-                payload = verify_decode_jwt(token)
-            except Exception:
-                abort(401)
-
-            check_permissions(permission, payload)
-            return f(payload, *args, **kwargs)
-
-        return wrapper
-    return requires_auth_decorator
-
-
-def requires_auth(permission=''):
-    def requires_auth_decorator(f):
-        @wraps(f)
-        def wrapper(*args, **kwargs):
-            token = get_token_auth_header()
-            try:
-                payload = verify_decode_jwt(token)
-            except Exception:
-                abort(401)
-
-            check_permissions(permission, payload)
-            return f(payload, *args, **kwargs)
-
-        return wrapper
-    return requires_auth_decorator
-
 
 def verify_decode_jwt(token):
     jsonurl = urlopen(f'{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
+
     unverified_header = jwt.get_unverified_header(token)
     rsa_key = {}
+
     if 'kid' not in unverified_header:
         raise AuthError({
             'code': 'invalid_header',
@@ -116,6 +82,7 @@ def verify_decode_jwt(token):
                 'n': key['n'],
                 'e': key['e']
             }
+
     if rsa_key:
         try:
             payload = jwt.decode(
@@ -137,8 +104,7 @@ def verify_decode_jwt(token):
         except jwt.JWTClaimsError:
             raise AuthError({
                 'code': 'invalid_claims',
-                'description': '''Incorrect claims.
-                                Please, check the audience and issuer.'''
+                'description': '''Incorrect claims, check the audience and issuer.'''
             }, 401)
         except Exception:
             raise AuthError({
@@ -149,3 +115,15 @@ def verify_decode_jwt(token):
         'code': 'invalid_header',
                 'description': 'Unable to find the appropriate key.'
     }, 400)
+
+def requires_auth(permission=''):
+    def requires_auth_decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            token = get_token_auth0header()
+            payload = verify_decode_jwt(token)
+            check_permissions(permission, payload)
+            return f(payload, *args, **kwargs)
+
+        return wrapper
+    return requires_auth_decorator
