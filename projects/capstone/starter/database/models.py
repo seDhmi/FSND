@@ -4,7 +4,7 @@ import json
 import os
 import datetime
 
-""" App Config. """
+# App Config. 
 
 database_filename = os.environ.get("DATABASE", "database.db")
 project_dir = os.path.dirname(os.path.abspath(__file__))
@@ -24,7 +24,7 @@ def db_drop_and_create_all():
     db.create_all()
 
 
-""" Shows Section. """
+# Shows Section.
 class Show(db.Model):
     __tablename__ = 'shows'
     actor_id = db.Column(db.Integer(), db.ForeignKey('actors.id'), primary_key=True)
@@ -55,7 +55,7 @@ class Show(db.Model):
         db.session.commit()
 
 
-""" Movies Section. """
+# Movies Section.
 class Movie(db.Model):
     __tablename__ = "movies"
 
@@ -92,7 +92,7 @@ class Movie(db.Model):
     def update(self):
         db.session.commit()
 
-""" Actors Section. """
+# Actors Section. 
 class Actor(db.Model):
     __tablename__ = "actors"
 

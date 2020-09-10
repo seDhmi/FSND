@@ -1,13 +1,12 @@
-import json
 from flask import request, _request_ctx_stack, abort
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
-from setup import AUTH0_DOMAIN_setup, ALGORITHMS_setup, API_AUDIENCE_setup
+import json
 
-AUTH0_DOMAIN = AUTH0_DOMAIN_setup
-ALGORITHMS = ALGORITHMS_setup
-API_AUDIENCE = API_AUDIENCE_setup
+AUTH0_DOMAIN = 'capstone-sedhmi.us.auth0.com'
+ALGORITHMS = ['RS256']
+API_AUDIENCE = 'capstone'
  
 
 class AuthError(Exception):
@@ -15,34 +14,20 @@ class AuthError(Exception):
         self.error = error
         self.status_code = status_code
 
-def get_token_auth0header():
-    "Method to handle access token from Auth Header."
-    auth0Header = request.headers.get('Authorization', None)
-    if not auth0Header:
-        raise AuthError({
-            'code':'Authorization_header_missing',
-            'description':'Authorization header is expected.'
-        }, 401)
+def get_token_auth_header():
+    if 'Authorization' not in request.headers:
+        abort(401)
 
-    parts = auth0Header.split()
+    auth_header = request.headers['Authorization']
+    header_parts = auth_header.split(' ')
+    first_part = auth_header.split(' ')[0]
+    second_part = auth_header.split(' ')[1]
+    if len(header_parts) != 2:
+        abort(401)
+    elif header_parts[0].lower() != 'bearer':
+        abort(401)
 
-    if parts[0].lower() != 'bearer':
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Authorization header must start with "bearer".'
-        }, 401)
-    elif len(parts) == 1:
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Token not found.'
-        }, 401)
-    elif len(parts) > 2:
-        raise AuthError({
-            'code':'invalid_header',
-            'description': 'Authorization header must be bearer token.'
-        }, 401)
-
-    token = parts[1]
+    token = header_parts[1]
     return token
 
 def check_permissions(permission, payload):
@@ -120,7 +105,7 @@ def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            token = get_token_auth0header()
+            token = get_token_auth_header()
             payload = verify_decode_jwt(token)
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)

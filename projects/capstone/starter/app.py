@@ -216,7 +216,7 @@ def create_app(test_config=None):
         except:
             abort(422)
 
-    # Error Handling
+    # Error Handling.
 
     @app.errorhandler(404)
     def not_found(error):
